@@ -1,0 +1,17 @@
+name: CD - Despliegue Continuo
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  despliegue:
+    name: Despliegue al entorno
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificacion de despliegue
+        run: echo "CD operativo. Despliegue real pendiente para la Fase 3."

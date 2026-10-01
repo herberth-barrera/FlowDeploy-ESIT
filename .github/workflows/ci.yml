@@ -1,0 +1,18 @@
+name: CI - Integracion Continua
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  validacion:
+    name: Validacion del codigo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificacion de entorno
+        run: echo "CI operativo. Etapas de lint/test/build pendientes para la Fase 2."
