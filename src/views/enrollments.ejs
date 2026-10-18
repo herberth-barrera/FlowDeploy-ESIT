@@ -1,0 +1,82 @@
+<div class="mb-4">
+  <h1 class="h2 mb-1">Inscripciones</h1>
+  <p class="text-secondary mb-0">Inscribe estudiantes activos en asignaturas activas.</p>
+</div>
+
+<% if (successMessage) { %>
+  <div class="alert alert-success" role="status"><%= successMessage %></div>
+<% } %>
+
+<% if (errores.length) { %>
+  <div class="alert alert-danger" role="alert">
+    <p class="fw-semibold mb-1">No se pudo registrar la inscripción:</p>
+    <ul class="mb-0">
+      <% errores.forEach((error) => { %><li><%= error %></li><% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<section class="card shadow-sm mb-4" aria-labelledby="enrollment-form-title">
+  <div class="card-body">
+    <h2 class="h5" id="enrollment-form-title">Registrar inscripción</h2>
+    <form action="/enrollments" method="post" class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label" for="student_id">Estudiante</label>
+        <select class="form-select" id="student_id" name="student_id" required>
+          <option value="">Selecciona un estudiante activo</option>
+          <% students.forEach((student) => { %>
+            <option value="<%= student.id %>" <%= String(enrollment.student_id || '') === String(student.id) ? 'selected' : '' %>><%= student.name %> — <%= student.email %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="course_id">Asignatura</label>
+        <select class="form-select" id="course_id" name="course_id" required>
+          <option value="">Selecciona una asignatura activa</option>
+          <% courses.forEach((course) => { %>
+            <option value="<%= course.id %>" <%= String(enrollment.course_id || '') === String(course.id) ? 'selected' : '' %>><%= course.code %> — <%= course.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label" for="year">Año</label>
+        <input class="form-control" id="year" name="year" type="number" required min="<%= yearMin %>" max="<%= yearMax %>" step="1" value="<%= enrollment.year || '' %>">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label" for="term">Ciclo</label>
+        <select class="form-select" id="term" name="term" required>
+          <option value="">Ciclo</option>
+          <% terms.forEach((term) => { %>
+            <option value="<%= term %>" <%= String(enrollment.term || '') === String(term) ? 'selected' : '' %>><%= term %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Guardar inscripción</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section aria-labelledby="enrollment-list-title">
+  <h2 class="h5 mb-3" id="enrollment-list-title">Inscripciones registradas</h2>
+  <% if (enrollments.length === 0) { %>
+    <p class="text-secondary">Aún no hay inscripciones registradas.</p>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle bg-white">
+        <thead><tr><th>Estudiante</th><th>Asignatura</th><th>Año</th><th>Ciclo</th></tr></thead>
+        <tbody>
+          <% enrollments.forEach((record) => { %>
+            <tr>
+              <td><%= record.student_name %></td>
+              <td><%= record.course_code %></td>
+              <td><%= record.year %></td>
+              <td><%= record.term %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
