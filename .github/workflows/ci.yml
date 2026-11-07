@@ -2,9 +2,7 @@ name: CI - Integracion Continua
 
 on:
   push:
-    branches: [ main, dev ]
   pull_request:
-    branches: [ main, dev ]
 
 jobs:
   validacion:
@@ -14,5 +12,21 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Verificacion de entorno
-        run: echo "CI operativo. Etapas de lint/test/build pendientes para la Fase 2."
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Preparar directorio de trabajo
+        run: mkdir -p work
+
+      - name: Pruebas
+        run: npm test
+
