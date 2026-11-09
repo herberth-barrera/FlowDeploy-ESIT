@@ -2,17 +2,46 @@ name: CI - Integracion Continua
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, dev ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validacion:
     name: Validacion del codigo
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Verificacion de entorno
-        run: echo "CI operativo. Etapas de lint/test/build pendientes para la Fase 2."
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Workaround temporal (incidencia D-01): la suite crea directorios
+      # temporales en work/, excluido por .gitignore, y falla en clon limpio.
+      - name: Preparar directorio de trabajo
+        run: mkdir -p work
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Smoke test de la app
+        run: npm run smoke
+
