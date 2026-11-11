@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS students (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  major TEXT NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1))
+);
+
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY,
+  code TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  credits INTEGER NOT NULL CHECK (credits BETWEEN {{CREDITS_MIN}} AND {{CREDITS_MAX}}),
+  active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1))
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+  id INTEGER PRIMARY KEY,
+  student_id INTEGER NOT NULL REFERENCES students(id),
+  course_id INTEGER NOT NULL REFERENCES courses(id),
+  year INTEGER NOT NULL CHECK (year BETWEEN {{YEAR_MIN}} AND {{YEAR_MAX}}),
+  term INTEGER NOT NULL CHECK (term IN ({{TERMS}})),
+  UNIQUE (student_id, course_id, year, term)
+);

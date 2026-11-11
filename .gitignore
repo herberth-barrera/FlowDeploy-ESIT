@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Nova Campus
+node_modules/
+.env
+*.db
+*.db-shm
+*.db-wal
+coverage/
+work/

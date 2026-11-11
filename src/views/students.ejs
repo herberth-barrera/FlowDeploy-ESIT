@@ -1,0 +1,70 @@
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+  <div>
+    <h1 class="h2 mb-1">Estudiantes</h1>
+    <p class="text-secondary mb-0">Registra y consulta estudiantes.</p>
+  </div>
+</div>
+
+<% if (successMessage) { %>
+  <div class="alert alert-success" role="status"><%= successMessage %></div>
+<% } %>
+
+<% if (errores.length) { %>
+  <div class="alert alert-danger" role="alert">
+    <p class="fw-semibold mb-1">Revisa estos datos:</p>
+    <ul class="mb-0">
+      <% errores.forEach((error) => { %><li><%= error %></li><% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<section class="card shadow-sm mb-4" aria-labelledby="student-form-title">
+  <div class="card-body">
+    <h2 class="h5" id="student-form-title">Registrar estudiante</h2>
+    <form action="/students" method="post" class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label" for="name">Nombre</label>
+        <input class="form-control" id="name" name="name" required minlength="2" maxlength="100" value="<%= student.name || '' %>">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="email">Correo electrónico</label>
+        <input class="form-control" id="email" name="email" type="email" required value="<%= student.email || '' %>">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="major">Carrera</label>
+        <input class="form-control" id="major" name="major" required minlength="2" maxlength="80" value="<%= student.major || '' %>">
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Guardar estudiante</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section aria-labelledby="student-list-title">
+  <h2 class="h5 mb-3" id="student-list-title">Estudiantes registrados</h2>
+  <% if (students.length === 0) { %>
+    <p class="text-secondary">Aún no hay estudiantes registrados.</p>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle bg-white">
+        <thead><tr><th>Nombre</th><th>Correo</th><th>Carrera</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody>
+          <% students.forEach((studentRecord) => { %>
+            <tr>
+              <td><%= studentRecord.name %></td>
+              <td><%= studentRecord.email %></td>
+              <td><%= studentRecord.major %></td>
+              <td><span class="badge <%= studentRecord.active ? 'text-bg-success' : 'text-bg-secondary' %>"><%= studentRecord.active ? 'Activo' : 'Inactivo' %></span></td>
+              <td>
+                <form action="/students/<%= studentRecord.id %>/toggle" method="post">
+                  <button class="btn btn-sm <%= studentRecord.active ? 'btn-outline-secondary' : 'btn-outline-success' %>" type="submit"><%= studentRecord.active ? 'Desactivar' : 'Activar' %></button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>
